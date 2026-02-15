@@ -1,7 +1,17 @@
 spring:
   application:
     name: movie-rank
+  docker:
+    compose:
+      enabled: true
+      file: docker-compose.yml
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:15432/mydatabase
+    username: myuser
+    password: secret
   liquibase:
-    change-log: classpath:db/changelog/db.changelog-master.yaml
-    enabled: true
-
+    change-log: classpath:db/changelog/db.changelog-master.yml
+logging:
+  level:
+    liquibase: DEBUG
