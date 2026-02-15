@@ -10,8 +10,3 @@ spring:
     url: jdbc:postgresql://localhost:15432/mydatabase
     username: myuser
     password: secret
-  liquibase:
-    change-log: classpath:db/changelog/db.changelog-master.yml
-logging:
-  level:
-    liquibase: DEBUG
