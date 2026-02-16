@@ -26,7 +26,7 @@ public class Movie {
     private String title;
 
     @Column(name = "rating")
-    private Float rating;
+    private Double rating;
 
     public Movie(String title) {
         this.title = title;
@@ -42,5 +42,9 @@ public class Movie {
     @Override
     public int hashCode() {
         return Objects.hashCode(id);
+    }
+
+    public void updateRating(Double rating) {
+        this.rating =  rating;
     }
 }

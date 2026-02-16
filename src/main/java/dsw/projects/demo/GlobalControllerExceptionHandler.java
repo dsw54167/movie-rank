@@ -34,7 +34,7 @@ public class GlobalControllerExceptionHandler {
                 .body(new ErrorResponse(exception.getMessage()));
     }
 
-    @ExceptionHandler(MethodArgumentNotValidException.class)
+    @ExceptionHandler(VoteAlreadyExists.class)
     public ResponseEntity<ErrorResponse> handleVoteAlreadyExists(VoteAlreadyExists exception) {
         log.warn(exception.getMessage());
         return ResponseEntity

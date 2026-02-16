@@ -21,12 +21,12 @@ public class Vote {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "email", nullable = false, unique = true)
+    @Column( nullable = false, unique = true)
     private String email;
 
     private Long movieId;
 
-    private int value;
+    private Integer value;
 
     public Vote(Long movieId, int value, String email) {
         this.email = email;
