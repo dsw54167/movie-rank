@@ -1,4 +1,4 @@
-package dsw.projects.demo;
+package dsw.projects.demo.movies;
 
 
 public class MovieNotFoundException extends Exception {
