@@ -7,6 +7,6 @@ spring:
       file: docker-compose.yml
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:15432/mydatabase
+    url: jdbc:postgresql://database:5432/mydatabase
     username: myuser
     password: secret

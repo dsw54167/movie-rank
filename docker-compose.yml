@@ -7,3 +7,11 @@ services:
       - 'POSTGRES_USER=myuser'
       - 'POSTGRES_DB=mydatabase'
       - 'POSTGRES_PASSWORD=secret'
+  app:
+    build: .
+    container_name: spring-boot-app
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
+    environment:
+      SPRING_DOCKER_COMPOSE_ENABLED: false
