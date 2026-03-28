@@ -25,6 +25,7 @@ repositories {
 }
 
 dependencies {
+	// Core Spring Boot starters
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-security'
@@ -32,16 +33,26 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	implementation 'org.springframework.boot:spring-boot-docker-compose'
 
+	// Liquibase and OpenAPI
 	implementation 'org.springframework.boot:spring-boot-starter-liquibase'
-	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:3.0.1")
+	implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:3.0.1"
 
+	// Keycloak / JWT support
+	implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
+	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client' // optional, for OAuth2 client usage
+
+	// Lombok
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
+
+	// Runtime dependencies
+	runtimeOnly 'org.postgresql:postgresql'
+
+	// Testing
 	testImplementation 'org.springframework.boot:spring-boot-starter-actuator-test'
 	testImplementation 'org.springframework.boot:spring-boot-starter-data-jpa-test'
 	testImplementation 'org.springframework.boot:spring-boot-starter-security-test'
 	testImplementation 'org.springframework.boot:spring-boot-starter-webmvc-test'
-	runtimeOnly 'org.postgresql:postgresql'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
