@@ -21,7 +21,6 @@ public class Movie {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-
     @Column(name = "title", nullable = false, unique = true)
     private String title;
 
@@ -30,6 +29,11 @@ public class Movie {
 
     public Movie(String title) {
         this.title = title;
+    }
+
+    Movie updateTitle(String title) {
+        this.title = title;
+        return this;
     }
 
     @Override

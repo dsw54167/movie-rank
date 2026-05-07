@@ -17,7 +17,7 @@ public class RatingService {
     private final MovieRepository ratingRepository;
     private final VoteRepository voteRepository;
 
-    @Scheduled(fixedRate = 30000)
+    @Scheduled(fixedRate = 300000)
     @Transactional
     void updateRatings() {
         log.info("Updating ratings has been started");

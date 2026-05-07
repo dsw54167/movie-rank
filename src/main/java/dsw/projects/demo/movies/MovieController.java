@@ -1,6 +1,7 @@
 package dsw.projects.demo.movies;
 
 import dsw.projects.demo.CreateMovieRequest;
+import dsw.projects.demo.UpdateMovieRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -17,9 +18,11 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.SortDefault;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -103,6 +106,32 @@ public class MovieController {
             @RequestBody CreateMovieRequest request) {
         var movie = repository.save(new Movie(request.title()));
         var dto = new MovieDto(movie.getId(), movie.getTitle(), movie.getRating());
+        return ResponseEntity.created(
+                        uriBuilder.path("/movies/{id}")
+                                .buildAndExpand(movie.getId())
+                                .toUri())
+                .body(dto);
+    }
+
+    @DeleteMapping(path = "/{id}")
+    ResponseEntity<Void> delete(@Parameter(description = "Unique identifier of the movie", required = true, example = "1")
+                                @PathVariable Long id
+    ) {
+        repository.deleteById(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping(path = "/{id}")
+    ResponseEntity<MovieDto> update(@Parameter(description = "Unique identifier of the movie", required = true, example = "1")
+                                    @PathVariable Long id,
+                                    UriComponentsBuilder uriBuilder,
+                                    @Parameter(description = "Movie update request containing the movie title", required = true)
+                                    @RequestBody UpdateMovieRequest request
+    ) throws MovieNotFoundException {
+        var movie = repository.findById(id)
+                .orElseThrow(() -> new MovieNotFoundException(id));
+        var updated = movie.updateTitle(request.title());
+        var dto = new MovieDto(updated.getId(), updated.getTitle(), updated.getRating());
         return ResponseEntity.created(
                         uriBuilder.path("/movies/{id}")
                                 .buildAndExpand(movie.getId())

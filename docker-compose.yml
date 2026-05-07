@@ -7,17 +7,6 @@ services:
       - 'POSTGRES_USER=myuser'
       - 'POSTGRES_DB=mydatabase'
       - 'POSTGRES_PASSWORD=secret'
-  app:
-    build: .
-    container_name: spring-boot-app
-    ports:
-      - "8081:8081"
-    restart: unless-stopped
-    environment:
-      SPRING_DOCKER_COMPOSE_ENABLED: false
-    depends_on:
-      - database
-      - keycloak
   keycloak:
     image: quay.io/keycloak/keycloak:21.1.1
     environment:
@@ -29,7 +18,8 @@ services:
       KC_DB_USERNAME: myuser
       KC_DB_PASSWORD: secret
       KC_HTTP_ENABLED: 'true'
-      KC_HOSTNAME: keycloak
+      KC_HOSTNAME: localhost
+      KC_HOSTNAME_STRICT: false
     ports:
       - '8080:8080'
     depends_on:

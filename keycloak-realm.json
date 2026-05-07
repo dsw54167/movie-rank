@@ -5,21 +5,54 @@
     {
       "clientId": "spring-app-client",
       "secret": "spring-secret",
+      "standardFlowEnabled": true,
       "directAccessGrantsEnabled": true,
       "publicClient": false,
-      "protocol": "openid-connect"
+      "protocol": "openid-connect",
+      "redirectUris": [
+        "http://localhost:8081/*"
+      ],
+      "webOrigins": ["*"],
+      "protocolMappers": [
+        {
+          "name": "realm-roles",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-realm-role-mapper",
+          "consentRequired": false,
+          "config": {
+            "claim.name": "realm_access.roles",
+            "jsonType.label": "String",
+            "multivalued": "true",
+            "userinfo.token.claim": "true",
+            "id.token.claim": "true",
+            "access.token.claim": "true"
+          }
+        }
+      ]
     }
   ],
+  "roles": {
+    "realm": [
+      { "name": "admin" },
+      { "name": "reviewer" }
+    ]
+  },
   "users": [
     {
       "username": "testuser",
       "enabled": true,
       "credentials": [
-        {
-          "type": "password",
-          "value": "testpass"
-        }
-      ]
+        { "type": "password", "value": "testpass" }
+      ],
+      "realmRoles": ["admin"]
+    },
+    {
+      "username": "testreviewer",
+      "enabled": true,
+      "credentials": [
+        { "type": "password", "value": "testpass" }
+      ],
+      "realmRoles": ["reviewer"]
     }
   ]
 }
