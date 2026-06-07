@@ -9,13 +9,16 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.web.SortDefault;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,9 +27,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
+@Slf4j
 @RestController
 @RequestMapping(path = "/movies")
 @RequiredArgsConstructor
+@CrossOrigin(origins = "http://localhost:5173")
 @Tag(name = "Movies", description = "Movie management API for retrieving and creating movies with ratings")
 public class MovieController {
 
@@ -70,11 +75,16 @@ public class MovieController {
             )
     })
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    ResponseEntity<Page<MovieDto>> getAll(
-            @Parameter(description = "Pagination and sorting parameters (page, size, sort). Default sort: rating,desc")
-            @SortDefault(sort = "rating", direction = Sort.Direction.DESC) @ParameterObject Pageable pageable) {
-        Page<Movie> all = repository.findAll(pageable);
+//    @Cacheable("movies")
+    public ResponseEntity<Page<MovieDto>> getAll(
+            @Parameter(description = "Pagination and sorting parameters (page, size, sort). Default sort: rating,desc") @ParameterObject Pageable pageable) {
+        Sort sort = Sort.by(
+                Sort.Order.desc("rating").nullsLast()
+        );
+        Pageable customPaging = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort);
+        Page<Movie> all = repository.findAll(customPaging);
         Page<MovieDto> dtoPage = all.map(movie -> new MovieDto(movie.getId(), movie.getTitle(), movie.getRating()));
+        log.info("Retrieved {} movies", dtoPage.getTotalElements());
         return ResponseEntity.ok(dtoPage);
     }
 
@@ -95,7 +105,8 @@ public class MovieController {
             )
     })
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    ResponseEntity<MovieDto> create(
+    @CacheEvict(cacheNames = "movies", allEntries = true)
+    public ResponseEntity<MovieDto> create(
             UriComponentsBuilder uriBuilder,
             @Parameter(description = "Movie creation request containing the movie title", required = true)
             @RequestBody CreateMovieRequest request) {

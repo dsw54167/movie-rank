@@ -7,11 +7,25 @@ services:
       - 'POSTGRES_USER=myuser'
       - 'POSTGRES_DB=mydatabase'
       - 'POSTGRES_PASSWORD=secret'
-  app:
-    build: .
-    container_name: spring-boot-app
+  movie-rank-backend:
+    container_name: movie-rank-backend
+    image: 'michmlyn/movie-rank-backend:1.0'
     ports:
       - "8080:8080"
+      - "5005:5005"
     restart: unless-stopped
     environment:
       SPRING_DOCKER_COMPOSE_ENABLED: false
+      JAVA_TOOL_OPTIONS: >
+        -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005
+    depends_on:
+      - database
+  movie-rank-frontend:
+    container_name: movie-rank-frontend
+    image: 'vidalson1337/movie-rank-frontend:latest'
+    ports:
+      - "5173:5173"
+    environment:
+      - VITE_BACKEND_URL=http://localhost:8080
+    depends_on:
+      - movie-rank-backend
