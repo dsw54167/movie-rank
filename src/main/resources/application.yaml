@@ -7,12 +7,16 @@ spring:
       file: docker-compose.yml
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://database:5432/mydatabase
+    url: jdbc:postgresql://movie-rank-db:5432/mydatabase
     username: myuser
     password: secret
   cache:
     cache-names: movies
-
+  rabbitmq:
+    host: rabbitmq
+    port: 5672
+    username: admin
+    password: password
 
 resilience4j:
   ratelimiter:
